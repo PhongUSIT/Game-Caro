@@ -3,7 +3,6 @@
 #include <string>
 #include <conio.h>
 #include <iostream>
-#include <string>
 #include <vector>
 #include <fstream>
 using namespace std;
@@ -51,7 +50,6 @@ void Hightlight_Play_turn(int x, int y, int w, int h, int color, int player);
 void DrawBoard(int pSize);
 void DrawTurn(int x, int y, int w, int h);
 void PrintText(string text, int color, int x, int y);
-void DrawLoaded(_POINT _A[][BOARD_SIZE]);
 //Hàm Control
 void ExitGame();
 void MoveRight();
@@ -66,10 +64,9 @@ int CheckBoard(int pX, int pY);
 int TestBoard();
 void ResetData();
 int Bot(int _X, int _Y, int& pX, int& pY);
-void SaveData(string filename, _POINT _A[][BOARD_SIZE], string Player1_name, int score1, string Player2_name, int Score2, bool _TURN);
-void LoadData(string filename, _POINT _A[][BOARD_SIZE], string& Player1_name, int& Score1, string& Player2_name, int& Score2, bool& _TURN, int& _COMMAND, int& _X, int& _Y);
-vector<string> loadFiles();
-bool CheckFileExistence(string filename);
+void SaveData(string filename);
+void LoadData(string filename);
+vector<string> LoadFiles();
 /*Hàm dọn dẹp tài nguyên*/
 void StartGame()
 {
@@ -149,54 +146,52 @@ void MenuDown(int& o, int n)
 		o++;
 	}
 }
-void SaveGame(_POINT _A[][BOARD_SIZE], string Player1_name, int Score1, string Player2_name, int Score2, bool _TURN) {
-	bool overwrite = false;
-	bool save = true;
-	string filename;
-	char key;
-	int option;
 
+void SaveGame() {
+	string filename;
 
 	system("cls");
-	cout << "Enter file game name which you want to save: ";
+	system("color F0");
+
+	PrintText("Nhap file name ban muon luu: ", 15, 40, 15);
 	getline(cin, filename);
-
-	//lay thoi gian trong may tinh
-	time_t t = time(0);
-	struct tm localtime;
-	localtime_s(&localtime, &t);
-
-	filename += "_";
-	filename += to_string(localtime.tm_mday);
-	filename += "_";
-	filename += to_string(localtime.tm_mon + 1);
-	filename += "-";
-	filename += to_string(localtime.tm_year + 1900);
-	filename += "-";
-	filename += to_string(localtime.tm_hour);
-	filename += to_string(localtime.tm_min + 1);
-	filename += to_string(localtime.tm_sec);
 	filename += ".txt";
 
-	SaveData(filename, _A, Player1_name, Score1, Player2_name, Score2, _TURN);
-	ofstream saveFile;
-	saveFile.open("gameList.txt", ios::app);
-	saveFile << filename << endl;
-	saveFile.close();
+	SaveData(filename);
+
+	ofstream savedfile;
+
+	savedfile.open("gamelist.txt", ios::app);
+	savedfile << filename << endl;
+	savedfile.close();
 
 }
 
-void LoadGame(string filename, _POINT _A[][BOARD_SIZE], string& Player1_name, int& Score1, string& Player2_name, int& Score2, bool& _TURN, int& _COMMAND, int& _X, int& _y) {
+void LoadGame(string filename) {
 	system("cls");
-	LoadData(filename, _A, Player1_name, Score1, Player2_name, Score2, _TURN, _COMMAND, _X, _Y);
+	system("color F0");
+
+	LoadData(filename);
+	DrawBoard(BOARD_SIZE);
+
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (_A[i][j].c == -1) {
+				cout << "X";
+			}
+			else if (_A[i][j].c == 1) {
+				cout << "O";
+			}
+		}
+	}
 	DrawBox(55, 19, 60, 8);
 	DrawTurn(55, _A[0][BOARD_SIZE - 1].y, 60, 12);
 	DrawBoard(BOARD_SIZE);
 	DrawOption(_A[0][0].x - 2, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 10, 2, 15, 0, "M:MENU");
 	DrawOption(_A[0][BOARD_SIZE - 1].x - 12, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 14, 2, 15, 0, "L:SAVE GAME");
-	DrawLoaded(_A);
 	GotoXY(_X, _Y);
 }
+
 //GamePlay của PvP
 void PlayPvP()
 {
@@ -423,9 +418,8 @@ void PlayPvP()
 				}
 				validEnter = true; //Mở khóa
 			}
-			else if (_COMMAND == 'L') {
-				
-				SaveGame(_A, Player1_name, Score1, Player2_name, Score2, _TURN);
+			else if (_COMMAND = 'L') {
+				SaveGame();
 				return;
 			}
 		}
@@ -680,6 +674,9 @@ void PlayPvC()
 						SetColor(14, 0);
 						cout << "X";
 
+						if (count == -2)
+							count = 0;
+
 						//Kiểm tra bot có thắng không
 						switch (ProcessFinish(TestBoard()))
 						{
@@ -698,15 +695,19 @@ void PlayPvC()
 								{
 									SetColor(15, 0);
 									StartGame();
+									count = -2; //Gán giá trị xác nhận máy win và đã chơi lại
 									break;
 								}
 							}
 						}
 					}
+					else
+						count = 0;
 				}
 				validEnter = true; //Mở khóa
 			}
 		}
 	}
 }
+
 

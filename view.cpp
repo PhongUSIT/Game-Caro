@@ -411,26 +411,11 @@ void DrawAbout()
 	}
 }
 
+
 void PrintText(string text, int color, int x, int y)
 {
 	GotoXY(x, y);
-	SetColor(color,0);
+	SetColor(15, 0);
 	cout << text;
-	SetColor(15,0);
+	SetColor(15, 0);
 }
-void DrawLoaded(_POINT _A[][BOARD_SIZE])
-{
-	for (int i = 0; i < BOARD_SIZE; i++)
-	{
-		for (int j = 0; j < BOARD_SIZE; j++)
-			if (_A[i][j].c == -1)
-			{
-				PrintText("X", 252, _A[i][j].x, _A[i][j].y);
-			}
-			else if (_A[i][j].c == 1)
-			{
-				PrintText("O", 250, _A[i][j].x, _A[i][j].y);
-			}
-	}
-}
-
