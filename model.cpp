@@ -52,6 +52,7 @@ void PrintText(string text, int color, int x, int y);
 void DrawBoard(int pSize);
 void DrawTurn(int x, int y, int w, int h);
 void DrawBox(int x, int y, int w, int h);
+void DrawLoaded(_POINT _A[][BOARD_SIZE]);
 //nhom ham control
 void MenuUp(int& o);
 void MenuDown(int& o, int n);
@@ -1098,12 +1099,8 @@ void Play()
 				PrintText("Nhap ten file ban muon tai: ", 100, 40, j);
 				getline(cin, filename);
 				LoadGame(filename);
-				system("cls");
-				DrawBox(55, 19, 60, 8);
-				DrawTurn(55, _A[0][BOARD_SIZE - 1].y, 60, 12);
-				DrawBoard(BOARD_SIZE);
-				DrawOption(_A[0][0].x - 2, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 10, 2, 15, 0, "M:MENU");
-				DrawOption(_A[0][BOARD_SIZE - 1].x - 12, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 14, 2, 15, 0, "L:SAVE GAME");
+				DrawLoaded(_A);
+				GotoXY(_X, _Y);
 				PlayPvP();
 			}
 			case 3:
