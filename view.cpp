@@ -419,3 +419,16 @@ void PrintText(string text, int color, int x, int y)
 	cout << text;
 	SetColor(15, 0);
 }
+
+void DrawLoaded(_POINT _A[][BOARD_SIZE]) {
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (_A[i][j].c == -1) {
+				PrintText("X", 15, _A[i][j].x,_A[i][j].y);
+			}
+			else if (_A[i][j].c == 1) {
+				PrintText("O", 15, _A[i][j].x, _A[i][j].y);
+			}
+		}
+	}
+}

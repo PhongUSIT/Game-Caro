@@ -49,6 +49,9 @@ void DrawMenu(int x, int y, int w, int h, MENU m);
 void DrawAbout();
 void printLogo();
 void PrintText(string text, int color, int x, int y);
+void DrawBoard(int pSize);
+void DrawTurn(int x, int y, int w, int h);
+void DrawBox(int x, int y, int w, int h);
 //nhom ham control
 void MenuUp(int& o);
 void MenuDown(int& o, int n);
@@ -1049,6 +1052,21 @@ vector<string> LoadFiles()
 	return files;
 }
 
+bool CheckFileExistence(string filename) {
+	string name;
+
+	ifstream savedfile;
+	savedfile.open("gamelist.txt", ios::in);
+
+	while (savedfile >> name) {
+		if (name == filename) {
+			savedfile.close();
+			return true;
+		}
+	}
+	savedfile.close();
+	return false;
+}
 void Play()
 {
 	system("color F0");
@@ -1080,6 +1098,13 @@ void Play()
 				PrintText("Nhap ten file ban muon tai: ", 100, 40, j);
 				getline(cin, filename);
 				LoadGame(filename);
+				system("cls");
+				DrawBox(55, 19, 60, 8);
+				DrawTurn(55, _A[0][BOARD_SIZE - 1].y, 60, 12);
+				DrawBoard(BOARD_SIZE);
+				DrawOption(_A[0][0].x - 2, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 10, 2, 15, 0, "M:MENU");
+				DrawOption(_A[0][BOARD_SIZE - 1].x - 12, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 2, 14, 2, 15, 0, "L:SAVE GAME");
+				PlayPvP();
 			}
 			case 3:
 				DrawAbout();

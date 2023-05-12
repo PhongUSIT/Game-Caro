@@ -50,6 +50,7 @@ void Hightlight_Play_turn(int x, int y, int w, int h, int color, int player);
 void DrawBoard(int pSize);
 void DrawTurn(int x, int y, int w, int h);
 void PrintText(string text, int color, int x, int y);
+void DrawLoaded(_POINT _A[][BOARD_SIZE]);
 //Hàm Control
 void ExitGame();
 void MoveRight();
@@ -67,6 +68,7 @@ int Bot(int _X, int _Y, int& pX, int& pY);
 void SaveData(string filename);
 void LoadData(string filename);
 vector<string> LoadFiles();
+bool CheckFileExistence(string filename);
 /*Hàm dọn dẹp tài nguyên*/
 void StartGame()
 {
@@ -152,19 +154,25 @@ void SaveGame() {
 
 	system("cls");
 	system("color F0");
-
-	PrintText("Nhap file name ban muon luu: ", 15, 40, 15);
-	getline(cin, filename);
-	filename += ".txt";
-
+	do {
+		PrintText("Nhap file name ban muon luu: ", 15, 40, 15);
+		getline(cin, filename);
+		filename += ".txt";
+		if (!CheckFileExistence(filename)) {
+			break;
+		}
+		else {
+			PrintText("Nhap lai ten khac: ", 15, 40, 17);
+		}
+	} while (1);
+	
 	SaveData(filename);
 
 	ofstream savedfile;
-
-	savedfile.open("gamelist.txt", ios::app);
-	savedfile << filename << endl;
-	savedfile.close();
-
+	
+		savedfile.open("gamelist.txt", ios::app);
+		savedfile << filename << endl;
+		savedfile.close();
 }
 
 void LoadGame(string filename) {
@@ -173,17 +181,6 @@ void LoadGame(string filename) {
 
 	LoadData(filename);
 	DrawBoard(BOARD_SIZE);
-
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			if (_A[i][j].c == -1) {
-				cout << "X";
-			}
-			else if (_A[i][j].c == 1) {
-				cout << "O";
-			}
-		}
-	}
 	DrawBox(55, 19, 60, 8);
 	DrawTurn(55, _A[0][BOARD_SIZE - 1].y, 60, 12);
 	DrawBoard(BOARD_SIZE);
